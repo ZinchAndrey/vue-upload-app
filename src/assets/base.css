@@ -1,0 +1,32 @@
+:root {
+  --text-color: #101828;
+  --sub-text-color: #667085;
+
+  --main-bg-color: #fff;
+  --item-bg-color: #fff;
+  --item-bg-color-alt: #F9FAFB;
+  --icon-bg-color: #F4EBFF;
+
+  --icon-color: #7F56D9;
+  --border-color: #EAECF0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-size: 20px;
+  line-height: 120%;
+  font-weight: 400;
+
+  color: var(--text-color);
+  background: var(--main-bg-color);
+}
