@@ -1,4 +1,5 @@
 <template>
+  <uploading-form/>
   <div class="list">
     <div class="list-caption-wrapper">
       <span class="list-caption list-caption--wide">
@@ -24,6 +25,7 @@
 import { ref } from 'vue';
 import { useFilesStore } from '@/stores/files.js';
 
+import UploadingForm from './UploadingForm.vue';
 import FileItem from './FileItem.vue';
 
 const filesStore = useFilesStore();
@@ -31,7 +33,7 @@ const files = ref(filesStore.files);
 
 </script>
 
-<style>
+<style scoped>
 .list {
   font-size: 16px;
   line-height: 120%;

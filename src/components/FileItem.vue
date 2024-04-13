@@ -44,7 +44,7 @@ defineProps({
 
 </script>
 
-<style lang="scss">
+<style scoped>
 .item {
   font-size: 18px;
   line-height: 120%;
@@ -79,9 +79,6 @@ defineProps({
   font-size: 18px;
   line-height: 120%;
   margin: 0;
-}
-
-.item__size-sub {
 }
 
 .item__size {

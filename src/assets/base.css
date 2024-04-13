@@ -4,11 +4,13 @@
 
   --main-bg-color: #fff;
   --item-bg-color: #fff;
-  --item-bg-color-alt: #F9FAFB;
-  --icon-bg-color: #F4EBFF;
+  --item-bg-color-alt: #f9fafb;
+  --icon-bg-color: #f4ebff;
 
-  --icon-color: #7F56D9;
-  --border-color: #EAECF0;
+  --icon-color: #7f56d9;
+  --border-color: #eaecf0;
+
+  --theme-color: #7f56d9;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -19,6 +21,22 @@
   box-sizing: border-box;
   margin: 0;
   font-weight: normal;
+}
+
+.visually-hidden:not(:focus):not(:active),
+input[type='checkbox'].visually-hidden,
+input[type='radio'].visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  /* // -webkit-clip-path: inset(100%); */
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 body {
