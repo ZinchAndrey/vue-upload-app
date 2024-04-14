@@ -16,11 +16,11 @@
 
 <script setup>
 import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
-import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
+// import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
 import { ref } from 'vue';
 
 const isUploading = ref(false);
-const files = ref([]);
+// const files = ref([]);
 
 const uploadFiles = async (evt) => {
   console.log(evt.target.files);
@@ -46,49 +46,47 @@ const uploadFiles = async (evt) => {
   }
 };
 
-const getFilesData = async (fileItems) => {
-  const fileDataPromises = fileItems.map(async (item, index) => {
-    const metadata = await getMetadata(item);
-    const url = await getDownloadURL(item);
-    item.url = url;
-    item.metadata = metadata;
+// const getFilesData = async (fileItems) => {
+//   const fileDataPromises = fileItems.map(async (item, index) => {
+//     const metadata = await getMetadata(item);
+//     const url = await getDownloadURL(item);
+//     item.url = url;
+//     item.metadata = metadata;
 
-    files.value[index] = {
-      name: item.name,
-      url: url,
-      type: metadata.type,
-      contentType: metadata.contentType,
-      size: metadata.size,
-      date: metadata.timeCreated,
-      updatedDate:metadata.updated
-    }
-    return item;
-  });
+//     files.value[index] = {
+//       name: item.name,
+//       url: url,
+//       type: metadata.type,
+//       contentType: metadata.contentType,
+//       size: metadata.size,
+//       date: metadata.timeCreated,
+//       id: new Date(metadata.timeCreated).getTime(),
+//       updatedDate: metadata.updated
+//     }
+//     return item;
+//   });
 
-  return Promise.all(fileDataPromises);
-}
+//   return Promise.all(fileDataPromises);
+// }
 
-const fetchFileList = async () => {
-  try {
-    const storageRef = firebaseStorageRef(storage, ''); // Пустая строка для получения списка файлов в корне хранилища
-    const result = await listAll(storageRef);
-    const uploadedFiles = result.items;
+// const fetchFileList = async () => {
+//   try {
+//     const storageRef = firebaseStorageRef(storage, ''); // Пустая строка для получения списка файлов в корне хранилища
+//     const result = await listAll(storageRef);
+//     const uploadedFiles = result.items;
 
-    // const filesData = await getFilesData(uploadedFiles);
-    // console.log(filesData);
-    
-    getFilesData(uploadedFiles).then(() => {
-      // Здесь можно обновлять список файлов скажем так и убирать лоадер
-      console.log(files.value);
-    });
+//     getFilesData(uploadedFiles).then(() => {
+//       // Здесь можно обновлять список файлов скажем так и убирать лоадер
+//       console.log(files.value);
+//     });
 
 
-  } catch (error) {
-    console.error('Ошибка получения списка файлов:', error);
-  }
-};
+//   } catch (error) {
+//     console.error('Ошибка получения списка файлов:', error);
+//   }
+// };
 
-fetchFileList();
+// fetchFileList();
 
 </script>
 
