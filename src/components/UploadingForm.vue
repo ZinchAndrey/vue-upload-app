@@ -3,8 +3,8 @@
     <h2 class="form__caption">
       Start by uploading a file
     </h2>
-    <base-button class="button" mode="filled">
-      Upload
+    <base-button class="button" :class="{'button--uploading': isUploading}" mode="filled">
+      {{ isUploading ? 'Uploading...' : 'Upload' }}
       <label class="label" for="fileInput">
         <input @change="uploadFiles" class="input visually-hidden" type="file" name="file" id="fileInput"
           multiple="multiple">
@@ -16,33 +16,33 @@
 
 <script setup>
 import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
-
-// import { send } from 'vite';
 import { ref } from 'vue';
 
+const isUploading = ref(false);
 const files = ref([]);
 
 const uploadFiles = async (evt) => {
   console.log(evt.target.files);
-  console.log(storage);
-  // Вообще не факт, что это понадобится
-  // Нужно фетчом файлы отправить.
+  isUploading.value = true;
 
   const currentFiles = evt.target.files;
+  const tasksToUpload = [];
 
-  const file = evt.target.files[0];
-  const storageRef = firebaseStorageRef(storage, file.name);
-  // const fileRef = storageRef.child(file.name);
-
-  try {
-    // await fileRef.put(file);
-    await uploadBytes(storageRef, file);
-    console.log('Файл успешно загружен в Firebase Storage');
-    // вызывать загрузку списка файлов уже новых 
-  } catch (error) {
-    console.error('Ошибка загрузки файла:', error);
+  for (let i = 0; i < currentFiles.length; i++) {
+    const currentFile = currentFiles[i];
+    const storageRef = firebaseStorageRef(storage, currentFile.name);
+    const taskToUpload = uploadBytes(storageRef, currentFile);
+    tasksToUpload.push(taskToUpload);
   }
 
+  try {
+    await Promise.all(tasksToUpload);// Ждем завершения всех задач загрузки
+    console.log('Все файлы успешно загружены в Firebase Storage');
+  } catch (error) {
+    console.error('Ошибка загрузки файлов:', error);
+  } finally {
+    isUploading.value = false;
+  }
 
   let i = 0;
   for (const currentFile of currentFiles) {
@@ -57,10 +57,6 @@ const uploadFiles = async (evt) => {
     }
     i++;
   }
-
-  // const data = await sentFiles(files);
-
-  // console.log(data);
 
   console.log(files);
 };
@@ -101,9 +97,25 @@ const uploadFiles = async (evt) => {
 }
 
 .button {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   position: relative;
   margin: 0 auto;
+}
+
+.button--uploading::before {
+  content: '';
+  display: block;
+  /* position: absolute;
+  left: 20px; */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  border-bottom-color: red;
+  animation: rotation 1s ease-out infinite;
 }
 
 .label {
