@@ -57,6 +57,7 @@ export const useFilesStore = defineStore('filesStore', {
           id: `${new Date(metadata.timeCreated).getTime()}`,
           updatedDate: metadata.updated
         }
+        console.log(this.files);
         return item;
       });
     

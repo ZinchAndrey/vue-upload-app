@@ -3,6 +3,11 @@
     <h2 class="form__caption">
       Start by uploading a file
     </h2>
+    <p class="form__sub">
+      Any assets used in projects will live here.
+      <br>
+      Start creating by uploading your files.
+    </p>
     <base-button class="button" :class="{ 'button--uploading': isUploading }" mode="filled">
       {{ isUploading ? 'Uploading...' : 'Upload' }}
       <label class="label" for="fileInput">
@@ -16,7 +21,6 @@
 
 <script setup>
 import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
-// import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
 import { ref } from 'vue';
 
 const isUploading = ref(false);
@@ -46,62 +50,30 @@ const uploadFiles = async (evt) => {
   }
 };
 
-// const getFilesData = async (fileItems) => {
-//   const fileDataPromises = fileItems.map(async (item, index) => {
-//     const metadata = await getMetadata(item);
-//     const url = await getDownloadURL(item);
-//     item.url = url;
-//     item.metadata = metadata;
-
-//     files.value[index] = {
-//       name: item.name,
-//       url: url,
-//       type: metadata.type,
-//       contentType: metadata.contentType,
-//       size: metadata.size,
-//       date: metadata.timeCreated,
-//       id: new Date(metadata.timeCreated).getTime(),
-//       updatedDate: metadata.updated
-//     }
-//     return item;
-//   });
-
-//   return Promise.all(fileDataPromises);
-// }
-
-// const fetchFileList = async () => {
-//   try {
-//     const storageRef = firebaseStorageRef(storage, ''); // Пустая строка для получения списка файлов в корне хранилища
-//     const result = await listAll(storageRef);
-//     const uploadedFiles = result.items;
-
-//     getFilesData(uploadedFiles).then(() => {
-//       // Здесь можно обновлять список файлов скажем так и убирать лоадер
-//       console.log(files.value);
-//     });
-
-
-//   } catch (error) {
-//     console.error('Ошибка получения списка файлов:', error);
-//   }
-// };
-
-// fetchFileList();
-
 </script>
 
 <style scoped>
 .form {
+  text-align: center;
   display: flex;
   flex-direction: column;
+  padding: 50px 24px;
+  width: 400px;
+  margin: 0 auto;
 }
 
 .form__caption {
-  font-size: 24px;
+  font-size: 16px;
   line-height: 120%;
   font-weight: 500;
   text-align: center;
+  margin: 0 0 10px;
+}
 
+.form__sub {
+  font-size: 14px;
+  line-height: 120%;
+  color: var(--sub-text-color);
   margin: 0 0 20px;
 }
 
@@ -112,6 +84,7 @@ const uploadFiles = async (evt) => {
   gap: 10px;
   position: relative;
   margin: 0 auto;
+  width: 100%;
 }
 
 .button--uploading::before {

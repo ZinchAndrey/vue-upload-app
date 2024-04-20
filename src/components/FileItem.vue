@@ -1,6 +1,8 @@
 <template>
   <div class="item">
-    <div class="item__icon"></div>
+    <div class="item__icon">
+      <component :is="currentIcon"></component>
+    </div>
 
     <div class="item__info-block">
       <h2 class="item__name">{{ name }}</h2>
@@ -15,7 +17,12 @@
 <script setup>
 import { defineProps } from 'vue';
 
-defineProps({
+import IconDocument from '@/components/UI/icons/IconDocument.vue';
+import IconFigma from '@/components/UI/icons/IconFigma.vue';
+import IconImage from '@/components/UI/icons/IconImage.vue';
+import IconVideo from '@/components/UI/icons/IconVideo.vue';
+
+const props = defineProps({
   id: {
     type: String,
     required: true,
@@ -25,6 +32,10 @@ defineProps({
     required: true,
   },
   type: {
+    type: String,
+    required: true,
+  },
+  contentType: {
     type: String,
     required: true,
   },
@@ -42,6 +53,22 @@ defineProps({
   },
 });
 
+const getFileTypeIcon = (contentType) => {
+  let icon = IconDocument;
+
+  if (contentType.includes('figma')) {
+    icon = IconFigma;
+  } else if (contentType.includes('image')) {
+    icon = IconImage;
+  } else if (contentType.includes('video')) {
+    icon = IconVideo;
+  }
+
+  return icon;
+}
+
+const currentIcon = getFileTypeIcon(props.contentType);
+console.log(currentIcon);
 </script>
 
 <style scoped>
@@ -65,6 +92,10 @@ defineProps({
   margin-right: 12px;
 
   background-color: var(--icon-bg-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .item__info-block {

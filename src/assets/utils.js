@@ -20,4 +20,8 @@ const convertSizeFromBytes = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-export { formatDate, convertSizeFromBytes }
+const getImageURL = (imgUrl) => {
+  return new URL(`/src/assets/${imgUrl}`, import.meta.url).href
+}
+
+export { formatDate, convertSizeFromBytes, getImageURL }
