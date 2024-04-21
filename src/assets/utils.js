@@ -24,4 +24,8 @@ const getImageURL = (imgUrl) => {
   return new URL(`/src/assets/${imgUrl}`, import.meta.url).href
 }
 
-export { formatDate, convertSizeFromBytes, getImageURL }
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text);
+}
+
+export { formatDate, convertSizeFromBytes, getImageURL, copyToClipboard }

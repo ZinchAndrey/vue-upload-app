@@ -6,7 +6,11 @@
 
     <div class="item__info-block">
       <h2 class="item__name">{{ name }}</h2>
-      <span class="item__size-sub">{{ size }}</span>
+      <button class="item__link-sub" @click="copyUrl">
+        <icon-copy />
+
+        {{ isCopied ? 'copied!' : 'copy link' }}
+      </button>
     </div>
 
     <span class="item__size">{{ size }}</span>
@@ -15,8 +19,11 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 
+import { copyToClipboard } from '@/assets/utils';
+
+import IconCopy from '@/components/UI/icons/IconCopy.vue';
 import IconDocument from '@/components/UI/icons/IconDocument.vue';
 import IconFigma from '@/components/UI/icons/IconFigma.vue';
 import IconImage from '@/components/UI/icons/IconImage.vue';
@@ -53,6 +60,10 @@ const props = defineProps({
   },
 });
 
+const COPIED_TIMEOUT = 1 * 1000;
+
+const isCopied = ref(false);
+
 const getFileTypeIcon = (contentType) => {
   let icon = IconDocument;
 
@@ -68,7 +79,16 @@ const getFileTypeIcon = (contentType) => {
 }
 
 const currentIcon = getFileTypeIcon(props.contentType);
-console.log(currentIcon);
+
+const copyUrl = () => {
+  copyToClipboard(props.url);
+
+  isCopied.value = true;
+  setTimeout(() => {
+    isCopied.value = false;
+  }, COPIED_TIMEOUT);
+}
+
 </script>
 
 <style scoped>
@@ -110,6 +130,46 @@ console.log(currentIcon);
   font-size: 18px;
   line-height: 120%;
   margin: 0;
+}
+
+.item__link-sub {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 120%;
+  color: inherit;
+  padding: 5px 0;
+
+  position: relative;
+  width: fit-content;
+  background: transparent;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+
+  transition: all ease-in 0.3s;
+}
+
+.item__link-sub::before {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 3px;
+  width: 0;
+  height: 1px;
+  border-bottom: 1px solid var(--theme-color);
+  transition: all cubic-bezier(0.85, 0.05, 1, 1) 0.3s;
+
+}
+
+.item__link-sub:hover {
+  color: var(--theme-color);
+}
+
+.item__link-sub:hover::before {
+  width: 100%;
 }
 
 .item__size {

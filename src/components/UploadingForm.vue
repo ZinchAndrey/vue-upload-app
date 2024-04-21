@@ -1,5 +1,11 @@
 <template>
-  <form action="" class="form" @submit.prevent="">
+  <form class="form" :class="{ 'form--highlight': isDragover}" 
+    @submit.prevent=""
+    @dragover.prevent="highlightForm"
+    @dragleave.prevent="deleteHighlightForm"
+    @drop.prevent="uploadFiles"
+  >
+    <icon-upload-big class="form__icon"/>
     <h2 class="form__caption">
       Start by uploading a file
     </h2>
@@ -9,6 +15,7 @@
       Start creating by uploading your files.
     </p>
     <base-button class="button" :class="{ 'button--uploading': isUploading }" mode="filled">
+      <icon-upload/>
       {{ isUploading ? 'Uploading...' : 'Upload' }}
       <label class="label" for="fileInput">
         <input @change="uploadFiles" class="input visually-hidden" type="file" name="file" id="fileInput"
@@ -23,14 +30,27 @@
 import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
 import { ref } from 'vue';
 
+import IconUpload from '@/components/UI/icons/IconUpload.vue';
+import IconUploadBig from '@/components/UI/icons/IconUploadBig.vue';
+
+
 const isUploading = ref(false);
+const isDragover = ref(false);
 // const files = ref([]);
 
-const uploadFiles = async (evt) => {
-  console.log(evt.target.files);
-  isUploading.value = true;
+const highlightForm = () => {
+  isDragover.value = true;
+}
+const deleteHighlightForm = () => {
+  isDragover.value = false;
+}
 
-  const currentFiles = evt.target.files;
+const uploadFiles = async (evt) => {
+  isUploading.value = true;
+  deleteHighlightForm();
+
+  // Проверка того, как были загружены файлы, drag&drop или input 
+  const currentFiles = evt.dataTransfer ? evt.dataTransfer.files : evt.target.files;
   const tasksToUpload = [];
 
   for (let i = 0; i < currentFiles.length; i++) {
@@ -60,6 +80,21 @@ const uploadFiles = async (evt) => {
   padding: 50px 24px;
   width: 400px;
   margin: 0 auto;
+
+  border-radius: 20px;
+  border: 4px dashed transparent;
+
+  transition: all ease-in 0.3s;
+}
+
+.form--highlight {
+  border-color: var(--theme-color);
+  opacity: 0.8;
+  box-shadow: 0px 0px 15px 2px var(--theme-color);
+}
+
+.form__icon {
+  margin: 0 auto 16px;
 }
 
 .form__caption {
@@ -98,6 +133,10 @@ const uploadFiles = async (evt) => {
   border: 4px solid #fff;
   border-bottom-color: red;
   animation: rotation 1s ease-out infinite;
+}
+
+.button--uploading svg {
+  display: none;
 }
 
 .label {
