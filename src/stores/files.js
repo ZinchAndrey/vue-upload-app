@@ -1,24 +1,25 @@
 // import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
-import { storage, firebaseStorageRef } from '@/firebase.js';
+import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
 
 import { formatDate, convertSizeFromBytes } from '@/assets/utils';
 
 export const useFilesStore = defineStore('filesStore', {
   state: () => ({
     files: [],
-    isFilesLoading: false
+    isFilesLoading: false,
+    isUploading: false
   }),
   actions: {
-    addFile(file) {
-      this.files.push(file)
-    },
-    deleteFile(fileId) {
-      const targetIndex = this.files.findIndex(file => file.id === fileId);
-      if (targetIndex < 0) return;
-      this.files.splice(targetIndex, 1);
-    },
+    // addFile(file) {
+    //   this.files.push(file)
+    // },
+    // deleteFile(fileId) {
+    //   const targetIndex = this.files.findIndex(file => file.id === fileId);
+    //   if (targetIndex < 0) return;
+    //   this.files.splice(targetIndex, 1);
+    // },
 
     async loadFileList () {
       this.isFilesLoading = true;
@@ -63,6 +64,27 @@ export const useFilesStore = defineStore('filesStore', {
     
       return Promise.all(fileDataPromises);
     },
+
+    async uploadFiles (files, callbackOnSuccess) {
+      const tasksToUpload = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const currentFile = files[i];
+        const storageRef = firebaseStorageRef(storage, currentFile.name);
+        const taskToUpload = uploadBytes(storageRef, currentFile);
+        tasksToUpload.push(taskToUpload);
+      }
+    
+      try {
+        await Promise.all(tasksToUpload);// Ждем завершения всех задач загрузки
+        console.log('Все файлы успешно загружены в Firebase Storage');
+      } catch (error) {
+        console.error('Ошибка загрузки файлов:', error);
+      } finally {
+        callbackOnSuccess && callbackOnSuccess();
+        this.isUploading = false;
+      }
+    }
 
   }
 })

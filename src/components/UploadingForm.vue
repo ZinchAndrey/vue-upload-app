@@ -27,15 +27,18 @@
 </template>
 
 <script setup>
-import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
+// import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
+
 import { ref } from 'vue';
 
 import IconUpload from '@/components/UI/icons/IconUpload.vue';
 import IconUploadBig from '@/components/UI/icons/IconUploadBig.vue';
 
+import { useFilesStore } from '@/stores/files';
 
 const isUploading = ref(false);
 const isDragover = ref(false);
+const filesStore = useFilesStore();
 // const files = ref([]);
 
 const highlightForm = () => {
@@ -48,26 +51,11 @@ const deleteHighlightForm = () => {
 const uploadFiles = async (evt) => {
   isUploading.value = true;
   deleteHighlightForm();
-
-  // Проверка того, как были загружены файлы, drag&drop или input 
+  
   const currentFiles = evt.dataTransfer ? evt.dataTransfer.files : evt.target.files;
-  const tasksToUpload = [];
-
-  for (let i = 0; i < currentFiles.length; i++) {
-    const currentFile = currentFiles[i];
-    const storageRef = firebaseStorageRef(storage, currentFile.name);
-    const taskToUpload = uploadBytes(storageRef, currentFile);
-    tasksToUpload.push(taskToUpload);
-  }
-
-  try {
-    await Promise.all(tasksToUpload);// Ждем завершения всех задач загрузки
-    console.log('Все файлы успешно загружены в Firebase Storage');
-  } catch (error) {
-    console.error('Ошибка загрузки файлов:', error);
-  } finally {
+  filesStore.uploadFiles(currentFiles, () => {
     isUploading.value = false;
-  }
+  });
 };
 
 </script>
