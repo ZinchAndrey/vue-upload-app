@@ -18,8 +18,8 @@
     </div>
     <ul class="list__file file__list">
       <li v-for="file in files" :key="file.id" class="file__item">
-        <file-item :id="file.id" :name="file.name" :type="file.type" :contentType="file.contentType" :size="file.size" :url="file.url"
-          :date="file.date" />
+        <file-item :id="file.id" :name="file.name" :type="file.type" :contentType="file.contentType" :size="file.size"
+          :url="file.url" :date="file.date" />
       </li>
     </ul>
   </div>

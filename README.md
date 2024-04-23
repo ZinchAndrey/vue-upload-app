@@ -7,6 +7,8 @@ Loader в отдельный компонент вынести
 
 Добавить возможность удаления (после 1ой проверки наверное)
 
+Обработку ошибок (после 1ой проверки)
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).

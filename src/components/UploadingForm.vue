@@ -1,11 +1,7 @@
 <template>
-  <form class="form" :class="{ 'form--highlight': isDragover}" 
-    @submit.prevent=""
-    @dragover.prevent="highlightForm"
-    @dragleave.prevent="deleteHighlightForm"
-    @drop.prevent="uploadFiles"
-  >
-    <icon-upload-big class="form__icon"/>
+  <form class="form" :class="{ 'form--highlight': isDragover }" @submit.prevent="" @dragover.prevent="highlightForm"
+    @dragleave.prevent="deleteHighlightForm" @drop.prevent="uploadFiles">
+    <icon-upload-big class="form__icon" />
     <h2 class="form__caption">
       Start by uploading a file
     </h2>
@@ -15,7 +11,7 @@
       Start creating by uploading your files.
     </p>
     <base-button class="button" :class="{ 'button--uploading': isUploading }" mode="filled">
-      <icon-upload/>
+      <icon-upload />
       {{ isUploading ? 'Uploading...' : 'Upload' }}
       <label class="label" for="fileInput">
         <input @change="uploadFiles" class="input visually-hidden" type="file" name="file" id="fileInput"
@@ -51,10 +47,23 @@ const deleteHighlightForm = () => {
 const uploadFiles = async (evt) => {
   isUploading.value = true;
   deleteHighlightForm();
-  
+
   const currentFiles = evt.dataTransfer ? evt.dataTransfer.files : evt.target.files;
-  filesStore.uploadFiles(currentFiles, () => {
+  console.log(filesStore);
+
+  filesStore.uploadFiless(currentFiles, () => {
     isUploading.value = false;
+
+    [...currentFiles].forEach(file => {
+      const fileName = file.name;
+      // const isAlreadyInStore = filesStore.files.some(file => file.name === fileName);
+      // if (isAlreadyInStore) {
+      //   return;
+      // }
+
+      filesStore.loadFile(fileName);
+    })
+
   });
 };
 

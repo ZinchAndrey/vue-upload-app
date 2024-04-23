@@ -1,9 +1,9 @@
 // import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
-import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
+import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js'
 
-import { formatDate, convertSizeFromBytes } from '@/assets/utils';
+import { formatDate, convertSizeFromBytes } from '@/assets/utils'
 
 export const useFilesStore = defineStore('filesStore', {
   state: () => ({
@@ -12,42 +12,78 @@ export const useFilesStore = defineStore('filesStore', {
     isUploading: false
   }),
   actions: {
-    // addFile(file) {
-    //   this.files.push(file)
-    // },
-    // deleteFile(fileId) {
-    //   const targetIndex = this.files.findIndex(file => file.id === fileId);
-    //   if (targetIndex < 0) return;
-    //   this.files.splice(targetIndex, 1);
-    // },
+    addFile(file) {
+      this.files.push(file)
+    },
+    deleteFile(fileId) {
+      const targetIndex = this.files.findIndex(file => file.id === fileId);
+      if (targetIndex < 0) return;
+      this.files.splice(targetIndex, 1);
+    },
+    async uploadFiless(files, callbackOnSuccess) {
+      const tasksToUpload = []
 
-    async loadFileList () {
-      this.isFilesLoading = true;
+      for (let i = 0; i < files.length; i++) {
+        const currentFile = files[i]
+        const storageRef = firebaseStorageRef(storage, currentFile.name)
+        const taskToUpload = uploadBytes(storageRef, currentFile)
+        tasksToUpload.push(taskToUpload)
+      }
 
       try {
-        const storageRef = firebaseStorageRef(storage, ''); // Пустая строка для получения списка файлов в корне хранилища
-        const result = await listAll(storageRef);
-        const uploadedFiles = result.items;
-    
-        this.transformFilesData(uploadedFiles).then(() => {
-          this.isFilesLoading = false;
-          // Здесь можно обновлять список файлов скажем так и убирать лоадер
-        });
-    
-    
+        await Promise.all(tasksToUpload) // Ждем завершения всех задач загрузки
+        console.log('Все файлы успешно загружены в Firebase Storage')
       } catch (error) {
-        console.error('Ошибка получения списка файлов:', error);
-        this.isFilesLoading = false;
+        console.error('Ошибка загрузки файлов:', error)
+      } finally {
+        callbackOnSuccess && callbackOnSuccess()
+        this.isUploading = false
       }
     },
 
-    async transformFilesData (fileItems) {
+
+    async loadFileList() {
+      this.isFilesLoading = true
+
+      try {
+        const storageRef = firebaseStorageRef(storage, '') // Пустая строка для получения списка файлов в корне хранилища
+        const result = await listAll(storageRef)
+        const uploadedFiles = result.items
+
+        this.transformFilesData(uploadedFiles).then(() => {
+          this.isFilesLoading = false
+          // Здесь можно обновлять список файлов скажем так и убирать лоадер
+        })
+      } catch (error) {
+        console.error('Ошибка получения списка файлов:', error)
+        this.isFilesLoading = false
+      }
+    },
+
+    async loadFile(filePath) {
+      this.isFilesLoading = true;
+
+      try {
+        const storageRef = firebaseStorageRef(storage, filePath) // Пустая строка для получения списка файлов в корне хранилища
+        // console.log(storageRef)
+        this.transformFilesData([storageRef]).then(() => {
+          this.isFilesLoading = false;
+          // Здесь можно обновлять список файлов скажем так и убирать лоадер
+        });
+        this.isFilesLoading = false
+      } catch (error) {
+        console.error('Ошибка получения списка файлов:', error)
+        this.isFilesLoading = false
+      }
+    },
+
+    async transformFilesData(fileItems) {
       const fileDataPromises = fileItems.map(async (item, index) => {
-        const metadata = await getMetadata(item);
-        const url = await getDownloadURL(item);
-        item.url = url;
-        item.metadata = metadata;
-    
+        const metadata = await getMetadata(item)
+        const url = await getDownloadURL(item)
+        item.url = url
+        item.metadata = metadata
+
         this.files[index] = {
           name: item.name,
           url: url,
@@ -58,33 +94,13 @@ export const useFilesStore = defineStore('filesStore', {
           id: `${new Date(metadata.timeCreated).getTime()}`,
           updatedDate: metadata.updated
         }
-        console.log(this.files);
-        return item;
-      });
-    
-      return Promise.all(fileDataPromises);
+        // console.log(this.files)
+        return item
+      })
+
+      return Promise.all(fileDataPromises)
     },
 
-    async uploadFiles (files, callbackOnSuccess) {
-      const tasksToUpload = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const currentFile = files[i];
-        const storageRef = firebaseStorageRef(storage, currentFile.name);
-        const taskToUpload = uploadBytes(storageRef, currentFile);
-        tasksToUpload.push(taskToUpload);
-      }
-    
-      try {
-        await Promise.all(tasksToUpload);// Ждем завершения всех задач загрузки
-        console.log('Все файлы успешно загружены в Firebase Storage');
-      } catch (error) {
-        console.error('Ошибка загрузки файлов:', error);
-      } finally {
-        callbackOnSuccess && callbackOnSuccess();
-        this.isUploading = false;
-      }
-    }
 
   }
 })
