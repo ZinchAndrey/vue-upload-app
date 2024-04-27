@@ -31,6 +31,7 @@ import IconUpload from '@/components/UI/icons/IconUpload.vue';
 import IconUploadBig from '@/components/UI/icons/IconUploadBig.vue';
 
 import { useFilesStore } from '@/stores/files';
+import router from '@/router/index.js';
 
 const isUploading = ref(false);
 const isDragover = ref(false);
@@ -49,13 +50,14 @@ const uploadFiles = async (evt) => {
   deleteHighlightForm();
 
   const currentFiles = evt.dataTransfer ? evt.dataTransfer.files : evt.target.files;
-  console.log(filesStore);
+  // console.log(filesStore);
 
-  filesStore.uploadFiless(currentFiles, () => {
+  filesStore.uploadNewFiles(currentFiles, () => {
     isUploading.value = false;
 
     [...currentFiles].forEach(file => {
       const fileName = file.name;
+      console.log(fileName);
       // const isAlreadyInStore = filesStore.files.some(file => file.name === fileName);
       // if (isAlreadyInStore) {
       //   return;
@@ -64,6 +66,7 @@ const uploadFiles = async (evt) => {
       filesStore.loadFile(fileName);
     })
 
+    router.push('/file-list');
   });
 };
 
@@ -74,8 +77,10 @@ const uploadFiles = async (evt) => {
   text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 50px 24px;
   width: 400px;
+  min-height: 500px;
   margin: 0 auto;
 
   border-radius: 20px;

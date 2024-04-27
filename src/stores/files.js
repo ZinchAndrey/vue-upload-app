@@ -20,7 +20,7 @@ export const useFilesStore = defineStore('filesStore', {
       if (targetIndex < 0) return;
       this.files.splice(targetIndex, 1);
     },
-    async uploadFiless(files, callbackOnSuccess) {
+    async uploadNewFiles(files, callbackOnSuccess) {
       const tasksToUpload = []
 
       for (let i = 0; i < files.length; i++) {

@@ -159,7 +159,7 @@ const copyUrl = () => {
   bottom: 3px;
   width: 0;
   height: 1px;
-  border-bottom: 1px solid var(--theme-color);
+  border-bottom: 1px dashed var(--theme-color);
   transition: all cubic-bezier(0.85, 0.05, 1, 1) 0.3s;
 
 }
