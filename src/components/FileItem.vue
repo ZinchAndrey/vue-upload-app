@@ -181,4 +181,60 @@ const copyUrl = () => {
   padding: 0 24px;
   min-width: 176px;
 }
+
+@media (max-width: 768px) {
+  .item {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+
+  .item__name {
+    font-size: 16px;
+  }
+
+  .item__link-sub {
+    font-size: 14px;
+  }
+
+  .item__size {
+    padding: 0;
+    min-width: unset;
+  }
+
+  .item__date {
+    text-align: right;
+    padding: 0;
+    min-width: unset;
+  }
+
+  .item__icon {
+    margin: 0;
+    max-width: 40px;
+  }
+
+  /* GRID */
+  .item {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    grid-template-rows: repeat(2, auto);
+    grid-column-gap: 20px;
+    grid-row-gap: 0px;
+  }
+
+  .item__icon {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+
+  .item__info-block {
+    grid-area: 1 / 2 / 2 / 4;
+  }
+
+  .item__size {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+
+  .item__date {
+    grid-area: 2 / 3 / 3 / 4;
+  }
+}
 </style>

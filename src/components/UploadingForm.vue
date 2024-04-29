@@ -80,6 +80,7 @@ const uploadFiles = async (evt) => {
   justify-content: center;
   padding: 50px 24px;
   width: 400px;
+  max-width: 100%;
   min-height: 500px;
   margin: 0 auto;
 

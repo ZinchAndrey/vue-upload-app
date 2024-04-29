@@ -197,4 +197,18 @@ onBeforeMount(() => {
 .file__item {
   border-top: 1px solid var(--border-color);
 }
+
+@media (max-width: 768px) {
+  .list__header {
+    padding: 12px 20px;
+  }
+
+  .list__header-caption {
+    font-size: 18px;
+  }
+
+  .list-caption-wrapper {
+    display: none;
+  }
+}
 </style>

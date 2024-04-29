@@ -38,4 +38,12 @@ export default {
   border-color: var(--theme-color);
   color: #fff;
 }
+
+@media (max-width: 768px) {
+  .button {
+    font-size: 14px;
+    min-width: 150px;
+    padding: 12px;
+  }
+}
 </style>
