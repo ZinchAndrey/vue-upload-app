@@ -107,6 +107,7 @@ const copyUrl = () => {
 
 .item__icon {
   width: 40px;
+  min-width: 40px;
   height: 40px;
   border-radius: 50%;
   margin-right: 12px;
@@ -119,9 +120,13 @@ const copyUrl = () => {
 }
 
 .item__info-block {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   flex-grow: 1;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .item__name {
@@ -130,6 +135,10 @@ const copyUrl = () => {
   font-size: 18px;
   line-height: 120%;
   margin: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .item__link-sub {

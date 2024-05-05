@@ -1,4 +1,3 @@
-// import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { listAll, getMetadata, getDownloadURL } from '@firebase/storage'
 import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js'
@@ -65,10 +64,8 @@ export const useFilesStore = defineStore('filesStore', {
 
       try {
         const storageRef = firebaseStorageRef(storage, filePath) // Пустая строка для получения списка файлов в корне хранилища
-        // console.log(storageRef)
         this.transformFilesData([storageRef]).then(() => {
           this.isFilesLoading = false;
-          // Здесь можно обновлять список файлов скажем так и убирать лоадер
         });
         this.isFilesLoading = false
       } catch (error) {
@@ -94,7 +91,6 @@ export const useFilesStore = defineStore('filesStore', {
           id: `${new Date(metadata.timeCreated).getTime()}`,
           updatedDate: metadata.updated
         }
-        // console.log(this.files)
         return item
       })
 

@@ -12,7 +12,7 @@
     </p>
     <base-button class="button" :class="{ 'button--uploading': isUploading }" mode="filled">
       <icon-upload />
-      {{ isUploading ? 'Uploading...' : 'Upload' }}
+      {{ buttonText }}
       <label class="label" for="fileInput">
         <input @change="uploadFiles" class="input visually-hidden" type="file" name="file" id="fileInput"
           multiple="multiple">
@@ -23,9 +23,7 @@
 </template>
 
 <script setup>
-// import { storage, firebaseStorageRef, uploadBytes } from '@/firebase.js';
-
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import IconUpload from '@/components/UI/icons/IconUpload.vue';
 import IconUploadBig from '@/components/UI/icons/IconUploadBig.vue';
@@ -36,7 +34,10 @@ import router from '@/router/index.js';
 const isUploading = ref(false);
 const isDragover = ref(false);
 const filesStore = useFilesStore();
-// const files = ref([]);
+
+const buttonText = computed(() => {
+  return isUploading.value ? 'Uploading...' : 'Upload';
+})
 
 const highlightForm = () => {
   isDragover.value = true;
@@ -50,23 +51,17 @@ const uploadFiles = async (evt) => {
   deleteHighlightForm();
 
   const currentFiles = evt.dataTransfer ? evt.dataTransfer.files : evt.target.files;
-  // console.log(filesStore);
 
   filesStore.uploadNewFiles(currentFiles, () => {
     isUploading.value = false;
 
     [...currentFiles].forEach(file => {
       const fileName = file.name;
-      console.log(fileName);
-      // const isAlreadyInStore = filesStore.files.some(file => file.name === fileName);
-      // if (isAlreadyInStore) {
-      //   return;
-      // }
-
+      // console.log(fileName);
       filesStore.loadFile(fileName);
     })
 
-    router.push('/file-list');
+    router.push({ name: 'file-list'});
   });
 };
 
@@ -128,8 +123,6 @@ const uploadFiles = async (evt) => {
 .button--uploading::before {
   content: '';
   display: block;
-  /* position: absolute;
-  left: 20px; */
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -151,7 +144,6 @@ const uploadFiles = async (evt) => {
   left: 0;
   top: 0;
   display: block;
-  /* width: fit-content; */
   margin: 0 auto;
   cursor: pointer;
 }

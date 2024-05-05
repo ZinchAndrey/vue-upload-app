@@ -1,5 +1,4 @@
 <template>
-  <!-- <uploading-form /> -->
   <div v-if="filesStore.isFilesLoading" class="loader">
     <h2 class="loader__caption">Loading files...</h2>
     <div class="loader__symbol"></div>
@@ -12,7 +11,7 @@
 
       <base-button class="button" :class="{ 'button--uploading': isUploading }" mode="filled">
         <icon-upload />
-        {{ isUploading ? 'Uploading...' : 'Upload' }}
+        {{ buttonText }}
         <label class="label" for="fileInputList">
           <input @change="uploadFiles" class="input visually-hidden" type="file" name="file" id="fileInputList"
             multiple="multiple">
@@ -41,16 +40,19 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { useFilesStore } from '@/stores/files.js';
 
 import IconUpload from '@/components/UI/icons/IconUpload.vue';
-// import UploadingForm from './UploadingForm.vue';
 import FileItem from './FileItem.vue';
 
 const isUploading = ref(false);
 const filesStore = useFilesStore();
 const files = ref(filesStore.files);
+
+const buttonText = computed(() => {
+  return isUploading.value ? 'Uploading...' : 'Upload';
+});
 
 const uploadFiles = async (evt) => {
   isUploading.value = true;
@@ -80,8 +82,6 @@ onBeforeMount(() => {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  /* background-color: #f1f1f1;
-  border-radius: 20px; */
 }
 
 .loader__caption {
@@ -133,8 +133,6 @@ onBeforeMount(() => {
 .button--uploading::before {
   content: '';
   display: block;
-  /* position: absolute;
-  left: 20px; */
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -156,7 +154,6 @@ onBeforeMount(() => {
   left: 0;
   top: 0;
   display: block;
-  /* width: fit-content; */
   margin: 0 auto;
   cursor: pointer;
 }

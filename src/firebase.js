@@ -1,9 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getStorage, ref as firebaseStorageRef, uploadBytes } from "firebase/storage";
 
-// import firebase from 'firebase/app';
-// import 'firebase/storage';
-
 const firebaseConfig = {
   apiKey: 'AIzaSyB3JTBkr63xmhaL9T_1qWxnMBX80fTdkMA',
   authDomain: 'vue-upload-app.firebaseapp.com',
@@ -19,5 +16,4 @@ const firebaseApp  = initializeApp(firebaseConfig)
 // Экспортируем объект Firebase Storage
 const storage = getStorage(firebaseApp)
 
-// export { storage, firebase as default };
 export { storage, firebaseStorageRef, uploadBytes, firebaseApp as default }
